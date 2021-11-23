@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="Simulation_of_Cube">
+    <output-path>$PROJECT_DIR$/out/artifacts/Simulation_of_Cube</output-path>
+    <root id="root">
+      <element id="archive" name="Simulation_of_Cube.jar">
+        <element id="module-output" name="Simulation_of_Cube" />
+      </element>
+    </root>
+  </artifact>
+</component>
