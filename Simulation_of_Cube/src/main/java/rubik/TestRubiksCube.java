@@ -9,8 +9,9 @@ public static void main(String[] args) throws Exception {
 		
 		System.out.println("start testing");
 		RubiksCube cube=new RubiksCube(3);
-		cube.performMove("RbLUlBDbUr");
+//		cube.performMove("RbLUlBDbUr");
 	//	cube.displayRubiksCube();
+//		cube.performMove("");
 		String s="";
 		s=cube.setPlus()+cube.setCorner();
 		System.out.println(s);
