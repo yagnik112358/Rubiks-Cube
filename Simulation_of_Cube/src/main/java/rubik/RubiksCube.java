@@ -67,6 +67,8 @@ public class RubiksCube {
 		for(int i=0;i<dimension;i++) {
 			for(int j=0;j<dimension;j++) {
 				for(int k=0;k<dimension;k++) {
+					setPositionAndOreintation(i,j,k);
+					/*
 					Side side1=this.left_Or_right(i);
 					Side side2=this.up_Or_down(j);
 					Side side3=this.front_Or_Back(k);
@@ -174,12 +176,122 @@ public class RubiksCube {
 							}
 						}
 
-					}
+					}*/
 				}
 			}
 		}
 		//System.out.println("Inside the update function");
 		//displayOrientationandPlace();
+	}
+	public void setPositionAndOreintation(int i,int j,int k){
+		Side side1=this.left_Or_right(i);
+		Side side2=this.up_Or_down(j);
+		Side side3=this.front_Or_Back(k);
+		if(this.isEdgeCornerCenter(i, j, k)==2){
+			RubiksCubeColor color1;
+			RubiksCubeColor color2;
+			RubiksCubeColor centerColor1;
+			RubiksCubeColor centerColor2;
+			if(side1!=null) {
+				color1=cubes[i][j][k].getColor(side1);
+				if(side2!=null) {
+					color2=cubes[i][j][k].getColor(side2);
+					centerColor1=cubes[i][j][k].getCenterColor(side1);
+					centerColor2=cubes[i][j][k].getCenterColor(side2);
+					if(color1.isEqual(cubes[i][j][k].getCenterColor(side1))&&color2.isEqual(cubes[i][j][k].getCenterColor(side2))){
+						validate_Position[i][j][k]=true;
+						validate_Orientation[i][j][k]=true;
+					}else {
+						Coordinate[] coordinate=search("Edge",centerColor1.name(),centerColor2.name());
+						if(coordinate[0].getX()==i&&coordinate[0].getY()==j&&coordinate[0].getZ()==k) {
+							//System.out.println("if orientation is false"+i+" "+j+" "+k);
+							validate_Position[i][j][k]=true;
+							validate_Orientation[i][j][k]=false;
+						}
+						else {
+							validate_Position[i][j][k]=false;
+							validate_Orientation[i][j][k]=false;
+						}
+
+					}
+				}
+				else {
+					color2=cubes[i][j][k].getColor(side3);
+					centerColor1=cubes[i][j][k].getCenterColor(side1);
+					centerColor2=cubes[i][j][k].getCenterColor(side3);
+					//System.out.println("i="+i+"j="+j+"k="+k);
+					//System.out.println("color1"+color1+"color2"+color2);
+					//System.out.println(cubes[i][j][k].getCenterColor(side1)+" "+cubes[i][j][k].getCenterColor(side3));
+
+					if(color1.isEqual(cubes[i][j][k].getCenterColor(side1))&&color2.isEqual(cubes[i][j][k].getCenterColor(side3))){
+						//System.out.println("I m not entering this");
+						validate_Position[i][j][k]=true;
+						validate_Orientation[i][j][k]=true;
+					}
+					else {
+						Coordinate[] coordinate=search("Edge",centerColor1.name(),centerColor2.name());
+						if(coordinate[0].getX()==i&&coordinate[0].getY()==j&&coordinate[0].getZ()==k) {
+							//System.out.println("if orientation is false"+i+" "+j+" "+k);
+							validate_Position[i][j][k]=true;
+							validate_Orientation[i][j][k]=false;
+						}
+						else {
+							validate_Position[i][j][k]=false;
+							validate_Orientation[i][j][k]=false;
+						}
+					}
+				}
+			}
+			else {
+				color1=cubes[i][j][k].getColor(side2);
+				color2=cubes[i][j][k].getColor(side3);
+				centerColor1=cubes[i][j][k].getCenterColor(side2);
+				centerColor2=cubes[i][j][k].getCenterColor(side3);
+				if(color1.isEqual(cubes[i][j][k].getCenterColor(side2))&&color2.isEqual(cubes[i][j][k].getCenterColor(side3))){
+					validate_Position[i][j][k]=true;
+					validate_Orientation[i][j][k]=true;
+				}else {
+					Coordinate[] coordinate=search("Edge",centerColor1.name(),centerColor2.name());
+					if(coordinate[0].getX()==i&&coordinate[0].getY()==j&&coordinate[0].getZ()==k) {
+						//System.out.println("if orientation is false"+i+" "+j+" "+k);
+						validate_Position[i][j][k]=true;
+						validate_Orientation[i][j][k]=false;
+					}
+					else {
+						validate_Position[i][j][k]=false;
+						validate_Orientation[i][j][k]=false;
+					}
+				}
+
+			}
+		}
+		else if(this.isEdgeCornerCenter(i, j, k)==3) {
+			//System.out.println("i="+i+"j="+j+"k="+k);
+			RubiksCubeColor cornerColor1=cubes[i][j][k].getColor(side1);
+			RubiksCubeColor cornerColor2=cubes[i][j][k].getColor(side2);
+			RubiksCubeColor cornerColor3=cubes[i][j][k].getColor(side3);
+			RubiksCubeColor centerColor1=cubes[i][j][k].getCenterColor(side1);
+			RubiksCubeColor centerColor2=cubes[i][j][k].getCenterColor(side2);
+			RubiksCubeColor centerColor3=cubes[i][j][k].getCenterColor(side3);
+			//			System.out.println("i="+i+"j="+j+"k="+k);
+			//		System.out.println(cornerColor1+" "+cornerColor2+" "+cornerColor3+" "+centerColor1+"" +centerColor2+" "+centerColor3);
+			if(cornerColor1.isEqual(centerColor1)&&cornerColor2==centerColor2&&cornerColor3==centerColor3) {
+				//	System.out.println("if both are true"+"i="+i+"j="+j+"k="+k);
+				validate_Position[i][j][k]=true;
+				validate_Orientation[i][j][k]=true;
+			}else {
+				Coordinate[] coordinate=search("Corner",centerColor1.name(),centerColor2.name(),centerColor3.name());
+				if(coordinate[0].getX()==i&&coordinate[0].getY()==j&&coordinate[0].getZ()==k) {
+					validate_Position[i][j][k]=true;
+					validate_Orientation[i][j][k]=false;
+				}
+				else {
+					validate_Position[i][j][k]=false;
+					validate_Orientation[i][j][k]=false;
+				}
+			}
+
+		}
 	}
 
 /*	public boolean isSolved() {
@@ -430,49 +542,49 @@ public class RubiksCube {
 		int j=1;
 		if(!isSecondLayerSolved()) {
 		for(int i=0;i<(dimension);i++) {
-				for(int k=0;k<(dimension);k++) {
-					if(isEdgeCornerCenter(i, j, k)==2) {
-//						System.out.println("i="+i+"j="+j+"k="+k);
-						Side side1=left_Or_right(i);
-						//Side side2=up_Or_down(j);
-						Side side3=front_Or_Back(k);
-						RubiksCubeColor centerColor1,centerColor2;
-						centerColor1=cubes[i][j][k].getCenterColor(side1);
-						centerColor2=cubes[i][j][k].getCenterColor(side3);
+			for(int k=0;k<(dimension);k++) {
+				if(isEdgeCornerCenter(i, j, k)==2) {
+//					System.out.println("i="+i+"j="+j+"k="+k);
+					Side side1=left_Or_right(i);
+					//Side side2=up_Or_down(j);
+					Side side3=front_Or_Back(k);
+					RubiksCubeColor centerColor1,centerColor2;
+					centerColor1=cubes[i][j][k].getCenterColor(side1);
+					centerColor2=cubes[i][j][k].getCenterColor(side3);
 	//	System.out.println(cubes[2][1][0].getColor(Side.FRONT));
 		//System.out.println(cubes[2][1][0].getColor(Side.RIGHT));
 		//updatePositionAndOrientation();
-		if(validate_Orientation[i][j][k]==false) {
-			Coordinate[] coordinate=search("Edge",centerColor1.name(),centerColor2.name());
-			//System.out.println("First Search"+coordinate[0].getX()+" "+coordinate[0].getY()+" "+coordinate[0].getZ());
-			if(coordinate[0].getY()==1 ) {
-			//	System.out.println("Ahiya nathi aavvanu");
-				if(coordinate[0].getX()==(dimension-1)&&coordinate[0].getZ()==0) {
-					String move="DFdfRfrF";
-					performMove(move);
-					middleLayerMove=middleLayerMove+move;
-				}
-				else if(coordinate[0].getX()==0&&coordinate[0].getZ()==0){
-					//System.out.println("In 0 0 ");
-					String move=translation("DFdfRfrF",'U');
-					performMove(move);
-					middleLayerMove=middleLayerMove+move;
-				}
-				else if(coordinate[0].getX()==0&&coordinate[0].getZ()==(dimension-1)) {
-					String move=translation(translation("DFdfRfrF",'U'),'U');
-					performMove(move);
-					middleLayerMove=middleLayerMove+move;
-				}
-				else if(coordinate[0].getX()==(dimension-1)&&coordinate[0].getZ()==(dimension-1)) {
-					String move=translation("DFdfRfrF",'D');
-					performMove(move);
-					middleLayerMove=middleLayerMove+move;
-				}
-			}
+				if(validate_Orientation[i][j][k]==false) {
+					Coordinate[] coordinate=search("Edge",centerColor1.name(),centerColor2.name());
+					//System.out.println("First Search"+coordinate[0].getX()+" "+coordinate[0].getY()+" "+coordinate[0].getZ());
+					if(coordinate[0].getY()==1 ) {
+					//	System.out.println("Ahiya nathi aavvanu");
+						if(coordinate[0].getX()==(dimension-1)&&coordinate[0].getZ()==0) {
+							String move="DFdfRfrF";
+							performMove(move);
+							middleLayerMove=middleLayerMove+move;
+						}
+						else if(coordinate[0].getX()==0&&coordinate[0].getZ()==0){
+							//System.out.println("In 0 0 ");
+							String move=translation("DFdfRfrF",'U');
+							performMove(move);
+							middleLayerMove=middleLayerMove+move;
+						}
+						else if(coordinate[0].getX()==0&&coordinate[0].getZ()==(dimension-1)) {
+							String move=translation(translation("DFdfRfrF",'U'),'U');
+							performMove(move);
+							middleLayerMove=middleLayerMove+move;
+						}
+						else if(coordinate[0].getX()==(dimension-1)&&coordinate[0].getZ()==(dimension-1)) {
+							String move=translation("DFdfRfrF",'D');
+							performMove(move);
+							middleLayerMove=middleLayerMove+move;
+						}
+					}
 
 			//Coordinate[] coordinate8=search("Edge",centerColor1.name(),centerColor2.name());
 			//System.out.println("After performing move and edge is in down"+coordinate8[0].getX()+" "+coordinate8[0].getY()+" "+coordinate8[0].getZ());
-			Coordinate[] cubeCoordinate=adjacentCorrdinate(new Coordinate(i,j,k));
+				Coordinate[] cubeCoordinate=adjacentCorrdinate(new Coordinate(i,j,k));
 //			System.out.println("First Search"+cubeCoordinate[0].getX()+" "+cubeCoordinate[0].getY()+" "+cubeCoordinate[0].getZ());
 
 		//	Color cubeFirstEdgeColor1=cubes[cubeCoordinate[0].getX()][cubeCoordinate[0].getY()][cubeCoordinate[0].getZ()].getColor(left_Or_right(i));
@@ -482,74 +594,74 @@ public class RubiksCube {
 		//	System.out.println(cubeFirstEdgeColor1+" "+cubeFirstEdgeColor2+" "+cubeSecondEdgeColor1+" "+cubeSecondEdgeColor2);
 			//System.out.println(left_Or_right(i)+" "+front_Or_Back(k)+" "+left_Or_right(i)+" "+front_Or_Back(k));
 
-			while(!((cubes[cubeCoordinate[0].getX()][cubeCoordinate[0].getY()][cubeCoordinate[0].getZ()].getColor(left_Or_right(i))==centerColor1&&cubes[cubeCoordinate[0].getX()][cubeCoordinate[0].getY()][cubeCoordinate[0].getZ()].getColor(Side.DOWN)==centerColor2) ||
-					(cubes[cubeCoordinate[1].getX()][cubeCoordinate[1].getY()][cubeCoordinate[1].getZ()].getColor(Side.DOWN)==centerColor1&&cubes[cubeCoordinate[1].getX()][cubeCoordinate[1].getY()][cubeCoordinate[1].getZ()].getColor(front_Or_Back(k))==centerColor2))) {
-				performMove("D");
-				middleLayerMove=middleLayerMove+"D";
-//				System.out.println("D perform");
-			}
+				while(!((cubes[cubeCoordinate[0].getX()][cubeCoordinate[0].getY()][cubeCoordinate[0].getZ()].getColor(left_Or_right(i))==centerColor1&&cubes[cubeCoordinate[0].getX()][cubeCoordinate[0].getY()][cubeCoordinate[0].getZ()].getColor(Side.DOWN)==centerColor2) ||
+						(cubes[cubeCoordinate[1].getX()][cubeCoordinate[1].getY()][cubeCoordinate[1].getZ()].getColor(Side.DOWN)==centerColor1&&cubes[cubeCoordinate[1].getX()][cubeCoordinate[1].getY()][cubeCoordinate[1].getZ()].getColor(front_Or_Back(k))==centerColor2))) {
+					performMove("D");
+					middleLayerMove=middleLayerMove+"D";
+	//				System.out.println("D perform");
+				}
 
 			//System.out.println("Right="+cubes[2][0][1].getColor(Side.RIGHT)+"Down"+cubes[2][0][1].getColor(Side.DOWN));
 			//System.out.println("Back"+cubes[1][0][2].getColor(Side.BACK)+"Down"+cubes[1][0][2].getColor(Side.DOWN));
-			RubiksCubeColor cubeFirstEdgeColor1=cubes[cubeCoordinate[0].getX()][cubeCoordinate[0].getY()][cubeCoordinate[0].getZ()].getColor(left_Or_right(i));
-				RubiksCubeColor cubeFirstEdgeColor2=cubes[cubeCoordinate[0].getX()][cubeCoordinate[0].getY()][cubeCoordinate[0].getZ()].getColor(Side.DOWN);
-				RubiksCubeColor cubeSecondEdgeColor1=cubes[cubeCoordinate[1].getX()][cubeCoordinate[1].getY()][cubeCoordinate[1].getZ()].getColor(Side.DOWN);
-				RubiksCubeColor cubeSecondEdgeColor2=cubes[cubeCoordinate[1].getX()][cubeCoordinate[1].getY()][cubeCoordinate[1].getZ()].getColor(front_Or_Back(k));
-			if(i==(dimension-1)&&k==0) {
-				if(cubeFirstEdgeColor1==centerColor1&&cubeFirstEdgeColor2==centerColor2){
-					String move="DFdfRfrF";
-					performMove(move);
-					middleLayerMove=middleLayerMove+move;
-					//performMove("drDRfRFr");
-				}
-				else if(cubeSecondEdgeColor1==centerColor1&&cubeSecondEdgeColor2==centerColor2){
-					String move="drDRfRFr";
-					performMove(move);
-					middleLayerMove=middleLayerMove+move;
-					//performMove("DFdfRfrF");
-				}
-			}
-			if(i==0&&k==0) {
-				if(cubeFirstEdgeColor1==centerColor1&&cubeFirstEdgeColor2==centerColor2) {
-				//	System.out.println("I m first edge");
-					String move=translation("drDRfRFr",'U');
-					performMove(move);
-					middleLayerMove=middleLayerMove+move;
-				}
-				else if(cubeSecondEdgeColor1==centerColor1&&cubeSecondEdgeColor2==centerColor2) {
-					//System.out.println("I m first edge else");
-					String move=translation("DFdfRfrF",'U');
-					performMove(move);
-					middleLayerMove=middleLayerMove+move;
-				}
-			}
-			if(i==0&&k==(dimension-1)) {
-				if(cubeFirstEdgeColor1==centerColor1&&cubeFirstEdgeColor2==centerColor2) {
-					String move=translation(translation("DFdfRfrF",'U'),'U');
-					performMove(move);
-					middleLayerMove=middleLayerMove+move;
-				}else if(cubeSecondEdgeColor1==centerColor1&&cubeSecondEdgeColor2==centerColor2) {
-					String move=translation(translation("drDRfRFr",'U'),'U');
-					performMove(move);
-					middleLayerMove=middleLayerMove+move;
-				}
+				RubiksCubeColor cubeFirstEdgeColor1=cubes[cubeCoordinate[0].getX()][cubeCoordinate[0].getY()][cubeCoordinate[0].getZ()].getColor(left_Or_right(i));
+					RubiksCubeColor cubeFirstEdgeColor2=cubes[cubeCoordinate[0].getX()][cubeCoordinate[0].getY()][cubeCoordinate[0].getZ()].getColor(Side.DOWN);
+					RubiksCubeColor cubeSecondEdgeColor1=cubes[cubeCoordinate[1].getX()][cubeCoordinate[1].getY()][cubeCoordinate[1].getZ()].getColor(Side.DOWN);
+					RubiksCubeColor cubeSecondEdgeColor2=cubes[cubeCoordinate[1].getX()][cubeCoordinate[1].getY()][cubeCoordinate[1].getZ()].getColor(front_Or_Back(k));
+					if(i==(dimension-1)&&k==0) {
+						if(cubeFirstEdgeColor1==centerColor1&&cubeFirstEdgeColor2==centerColor2){
+							String move="DFdfRfrF";
+							performMove(move);
+							middleLayerMove=middleLayerMove+move;
+							//performMove("drDRfRFr");
+						}
+						else if(cubeSecondEdgeColor1==centerColor1&&cubeSecondEdgeColor2==centerColor2){
+							String move="drDRfRFr";
+							performMove(move);
+							middleLayerMove=middleLayerMove+move;
+							//performMove("DFdfRfrF");
+						}
+					}
+					if(i==0&&k==0) {
+						if(cubeFirstEdgeColor1==centerColor1&&cubeFirstEdgeColor2==centerColor2) {
+						//	System.out.println("I m first edge");
+							String move=translation("drDRfRFr",'U');
+							performMove(move);
+							middleLayerMove=middleLayerMove+move;
+						}
+						else if(cubeSecondEdgeColor1==centerColor1&&cubeSecondEdgeColor2==centerColor2) {
+							//System.out.println("I m first edge else");
+							String move=translation("DFdfRfrF",'U');
+							performMove(move);
+							middleLayerMove=middleLayerMove+move;
+						}
+					}
+					if(i==0&&k==(dimension-1)) {
+						if(cubeFirstEdgeColor1==centerColor1&&cubeFirstEdgeColor2==centerColor2) {
+							String move=translation(translation("DFdfRfrF",'U'),'U');
+							performMove(move);
+							middleLayerMove=middleLayerMove+move;
+						}else if(cubeSecondEdgeColor1==centerColor1&&cubeSecondEdgeColor2==centerColor2) {
+							String move=translation(translation("drDRfRFr",'U'),'U');
+							performMove(move);
+							middleLayerMove=middleLayerMove+move;
+						}
 
-			}
-			if(i==(dimension-1)&&k==(dimension-1)){
-				if(cubeFirstEdgeColor1.isEqual(centerColor1)&&cubeFirstEdgeColor2.isEqual(centerColor2)) {
-					String move=translation("drDRfRFr",'D');
-					performMove(move);
-					middleLayerMove=middleLayerMove+move;
-				}
-				else if(cubeSecondEdgeColor1==centerColor1&&cubeSecondEdgeColor2==centerColor2) {
-					String move=translation("DFdfRfrF",'D');
-					performMove(move);
-					middleLayerMove=middleLayerMove+move;
-				}
-			}
-//			Coordinate[] coordinate9=search("Edge",centerColor1.name(),centerColor2.name());
-//			System.out.println("final"+coordinate9[0].getX()+" "+coordinate9[0].getY()+" "+coordinate9[0].getZ());
-			}
+					}
+					if(i==(dimension-1)&&k==(dimension-1)){
+						if(cubeFirstEdgeColor1.isEqual(centerColor1)&&cubeFirstEdgeColor2.isEqual(centerColor2)) {
+							String move=translation("drDRfRFr",'D');
+							performMove(move);
+							middleLayerMove=middleLayerMove+move;
+						}
+						else if(cubeSecondEdgeColor1==centerColor1&&cubeSecondEdgeColor2==centerColor2) {
+							String move=translation("DFdfRfrF",'D');
+							performMove(move);
+							middleLayerMove=middleLayerMove+move;
+						}
+					}
+		//			Coordinate[] coordinate9=search("Edge",centerColor1.name(),centerColor2.name());
+		//			System.out.println("final"+coordinate9[0].getX()+" "+coordinate9[0].getY()+" "+coordinate9[0].getZ());
+					}
 					}
 				}
 			}
